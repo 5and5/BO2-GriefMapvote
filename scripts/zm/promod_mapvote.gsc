@@ -59,12 +59,11 @@ mv_Config()
 	}
 
 	// Setting default values if needed
-	SetDvarIfNotInizialized("mv_credits", 1);
+	SetDvarIfNotInizialized("mv_sentence", "Thanks for Playing!");
 	SetDvarIfNotInizialized("mv_socials", 1);
 	SetDvarIfNotInizialized("mv_socialname", "Discord");
-	SetDvarIfNotInizialized("mv_sociallink", "Discord.gg/^3Plutonium^7");
-	SetDvarIfNotInizialized("mv_sentence", "Thanks for Playing by @DoktorSAS");
-	SetDvarIfNotInizialized("mv_votecolor", "5");
+	SetDvarIfNotInizialized("mv_sociallink", "Discord.gg/^3CODRGrief^7");
+	SetDvarIfNotInizialized("mv_votecolor", "5");		
 	SetDvarIfNotInizialized("mv_arrowcolor", "white");
 	SetDvarIfNotInizialized("mv_blur", "3");
 	SetDvarIfNotInizialized("mv_scrollcolor", "cyan");
@@ -584,7 +583,7 @@ mv_ServerUI()
 	mv_sociallink = getDvar("mv_sociallink");
 	credits = level createServerFontString("objective", 1.2);
 	credits setPoint("BOTTOM_LEFT", "BOTTOM_LEFT");
-	credits setText(mv_sentence + "\nDeveloped by @^5DoktorSAS ^7\n" + mv_socialname + ": " + mv_sociallink);
+	credits setText(mv_sentence + "\nDeveloped by ^5JezuzLizard^7, ^55and5^7, ^5DoktorSAS ^7\n" + mv_socialname + "^7: " + mv_sociallink);
 
 	timer = level createServerFontString("objective", 2);
 	timer setPoint("CENTER", "BOTTOM", "CENTER", "CENTER");
