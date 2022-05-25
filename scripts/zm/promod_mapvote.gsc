@@ -45,7 +45,7 @@ mv_Config()
 	level.__mapvote = [];
 	SetDvarIfNotInizialized("mv_time", 20);
 	level.__mapvote["time"] = getDvarInt("mv_time");
-	SetDvarIfNotInizialized("mv_maps", "depot farm town diner tunnel power cellblock docks buried");
+	SetDvarIfNotInizialized("mv_maps", "depot farm town diner tunnel power cellblock docks buried pdw dragon crazyplace spawn nuked");
 
 	// PreCache maps images
 	mapsIDs = [];
@@ -698,21 +698,30 @@ getMapsData(mapsIDs)
 	mapsdata["buried"].mapid = "exec zm_4v4_grief_street.cfg map zm_buried";
 	mapsdata["buried"].image = "loadscreen_zm_buried_zgrief_street";
 
+	mapsdata["crazyplace"] = spawnStruct();
+	mapsdata["crazyplace"].mapname = "Crazyplace";
+	mapsdata["crazyplace"].mapid = "exec zm_4v4_grief_crazyplace.cfg map zm_tomb";
+	mapsdata["crazyplace"].image = "loadscreen_zm_tomb_zclassic_tomb";
 
-	// mapsdata["zm_tomb_grief"] = spawnStruct();
-	// mapsdata["zm_tomb_grief"].mapname = "Origins";
-	// mapsdata["zm_tomb_grief"].mapid = "exec zm_grief_tomb.cfg map zm_tomb";
-	// mapsdata["zm_tomb_grief"].image = "loadscreen_zm_tomb_zclassic_tomb";
+	mapsdata["spawn"] = spawnStruct();
+	mapsdata["spawn"].mapname = "Spawn";
+	mapsdata["spawn"].mapid = "exec zm_4v4_grief_trenches.cfg map zm_tomb";
+	mapsdata["spawn"].image = "loadscreen_zm_tomb_zclassic_tomb";
 
-	// mapsdata["zm_highrises_grief"] = spawnStruct();
-	// mapsdata["zm_highrises_grief"].mapname = "Die rise";
-	// mapsdata["zm_highrises_grief"].mapid = "exec zm_grief_rooftop.cfg map zm_highrise";
-	// mapsdata["zm_highrises_grief"].image = "loadscreen_zm_highrise_zclassic_rooftop";
+	mapsdata["dragon"] = spawnStruct();
+	mapsdata["dragon"].mapname = "Dragon";
+	mapsdata["dragon"].mapid = "exec zm_4v4_grief_rooftop_blue.cfg map zm_highrise";
+	mapsdata["dragon"].image = "loadscreen_zm_highrise_zclassic_rooftop";
 
-	// mapsdata["zm_nuked_grief"] = spawnStruct();
-	// mapsdata["zm_nuked_grief"].mapname = "Nuketown";
-	// mapsdata["zm_nuked_grief"].mapid = "exec zm_grief_nuked.cfg map zm_nuked";
-	// mapsdata["zm_nuked_grief"].image = "loadscreen_zm_nuked_zstandard_nuked";
+	mapsdata["pdw"] = spawnStruct();
+	mapsdata["pdw"].mapname = "PDW";
+	mapsdata["pdw"].mapid = "exec zm_4v4_grief_rooftop_pdw.cfg map zm_highrise";
+	mapsdata["pdw"].image = "loadscreen_zm_highrise_zclassic_rooftop";
+
+	mapsdata["nuked"] = spawnStruct();
+	mapsdata["nuked"].mapname = "Nuketown";
+	mapsdata["nuked"].mapid = "exec zm_4v4_grief_nuked.cfg map zm_nuked";
+	mapsdata["nuked"].image = "loadscreen_zm_nuked_zstandard_nuked";
 
 	return mapsdata;
 }
