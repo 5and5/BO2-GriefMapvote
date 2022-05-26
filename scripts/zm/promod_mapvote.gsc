@@ -28,6 +28,7 @@ mv_Config()
 		return;						  // End if the mapvote its not enable
 
 	level.__mapvote = [];
+	SetDvarIfNotInizialized("mv_endscreen_time", 6);
 	SetDvarIfNotInizialized("mv_time", 20);
 	level.__mapvote["time"] = getDvarInt("mv_time");
 	SetDvarIfNotInizialized("mv_maps", "depot farm town diner tunnel power cellblock docks buried pdw dragon crazyplace trenches nuked");
@@ -142,6 +143,7 @@ getMapsData(mapsIDs)
 
 _intermission()
 {
+	level.zombie_vars["zombie_intermission_time"] = getDvarInt("mv_endscreen_time");
 	level.intermission = 1;
 	level notify("intermission");
 
