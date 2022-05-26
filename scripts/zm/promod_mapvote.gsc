@@ -2,24 +2,10 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes_zm\_hud_util;
 
-/*
-	Mod: Mapvote Menu
-	Developed by DoktorSAS
-	Version: 2.0.1
-
-	2.0.1:
-	- Ported new design
-	- Timer fixed
-	- Fixed UI animations
-	- Removed usless functions
-	- Fixed UI removing screen text
-	- Added animations during vote
-	- Fixed design issues
-*/
-
 main()
 {
 	replaceFunc(maps\mp\zombies\_zm::intermission, ::_intermission);
+	// replaceFunc(maps\mp\zombies\_zm::end_game, ::end_game_override);
 }
 
 init()
@@ -37,7 +23,6 @@ init()
 
 mv_Config()
 {
-	logPrint("mapvote//config");
 	SetDvarIfNotInizialized("mv_enable", 1);
 	if (getDvarInt("mv_enable") != 1) // Check if mapvote is enable
 		return;						  // End if the mapvote its not enable
@@ -45,7 +30,7 @@ mv_Config()
 	level.__mapvote = [];
 	SetDvarIfNotInizialized("mv_time", 20);
 	level.__mapvote["time"] = getDvarInt("mv_time");
-	SetDvarIfNotInizialized("mv_maps", "depot farm town diner tunnel power cellblock docks buried pdw dragon crazyplace spawn nuked");
+	SetDvarIfNotInizialized("mv_maps", "depot farm town diner tunnel power cellblock docks buried pdw dragon crazyplace trenches nuked");
 
 	// PreCache maps images
 	mapsIDs = [];
@@ -71,6 +56,138 @@ mv_Config()
 	SetDvarIfNotInizialized("mv_backgroundcolor", "grey");
 	SetDvarIfNotInizialized("mv_gametype", "");
 	setDvarIfNotInizialized("mv_excludedmaps", "");
+}
+
+getMapsData(mapsIDs)
+{
+	mapsdata = [];
+
+	foreach (id in mapsIDs)
+	{
+		mapsdata[id] = spawnStruct();
+	}
+
+	mapsdata["depot"] = spawnStruct();
+	mapsdata["depot"].mapname = "Depot";
+	mapsdata["depot"].mapid = "exec zm_4v4_grief_transit.cfg map zm_transit";
+	mapsdata["depot"].image = "loadscreen_zm_transit_zgrief_transit";
+
+	mapsdata["farm"] = spawnStruct();
+	mapsdata["farm"].mapname = "Farm";
+	mapsdata["farm"].mapid = "exec zm_4v4_grief_farm.cfg map zm_transit";
+	mapsdata["farm"].image = "loadscreen_zm_transit_zgrief_farm";
+
+	mapsdata["town"] = spawnStruct();
+	mapsdata["town"].mapname = "Town";
+	mapsdata["town"].mapid = "exec zm_4v4_grief_town.cfg map zm_transit";
+	mapsdata["town"].image = "loadscreen_zm_transit_zgrief_town";
+
+	mapsdata["diner"] = spawnStruct();
+	mapsdata["diner"].mapname = "Diner";
+	mapsdata["diner"].mapid = "exec zm_4v4_grief_diner.cfg map zm_transit";
+	mapsdata["diner"].image = "loadscreen_zm_transit_dr_zcleansed_diner";
+
+	mapsdata["tunnel"] = spawnStruct();
+	mapsdata["tunnel"].mapname = "Tunnel";
+	mapsdata["tunnel"].mapid = "exec zm_4v4_grief_tunnel.cfg map zm_transit";
+	mapsdata["tunnel"].image = "loadscreen_zm_transit_zstandard_transit";
+
+	mapsdata["power"] = spawnStruct();
+	mapsdata["power"].mapname = "Power";
+	mapsdata["power"].mapid = "exec zm_4v4_grief_power.cfg map zm_transit";
+	mapsdata["power"].image = "loadscreen_zm_transit_zstandard_transit";
+
+	mapsdata["cellblock"] = spawnStruct();
+	mapsdata["cellblock"].mapname = "Cellblock";
+	mapsdata["cellblock"].mapid = "exec zm_4v4_grief_cellblock.cfg map zm_prison";
+	mapsdata["cellblock"].image = "loadscreen_zm_prison_zgrief_cellblock";
+
+	mapsdata["docks"] = spawnStruct();
+	mapsdata["docks"].mapname = "Docks";
+	mapsdata["docks"].mapid = "exec zm_4v4_grief_docks.cfg map zm_prison";
+	mapsdata["docks"].image = "loadscreen_zm_prison_zgrief_cellblock";
+
+	mapsdata["buried"] = spawnStruct();
+	mapsdata["buried"].mapname = "Buried";
+	mapsdata["buried"].mapid = "exec zm_4v4_grief_street.cfg map zm_buried";
+	mapsdata["buried"].image = "loadscreen_zm_buried_zgrief_street";
+
+	mapsdata["crazyplace"] = spawnStruct();
+	mapsdata["crazyplace"].mapname = "Crazyplace";
+	mapsdata["crazyplace"].mapid = "exec zm_4v4_grief_crazyplace.cfg map zm_tomb";
+	mapsdata["crazyplace"].image = "loadscreen_zm_tomb_zclassic_tomb";
+
+	mapsdata["trenches"] = spawnStruct();
+	mapsdata["trenches"].mapname = "Spawn";
+	mapsdata["trenches"].mapid = "exec zm_4v4_grief_trenches.cfg map zm_tomb";
+	mapsdata["trenches"].image = "loadscreen_zm_tomb_zclassic_tomb";
+
+	mapsdata["dragon"] = spawnStruct();
+	mapsdata["dragon"].mapname = "Dragon";
+	mapsdata["dragon"].mapid = "exec zm_4v4_grief_rooftop_blue.cfg map zm_highrise";
+	mapsdata["dragon"].image = "loadscreen_zm_highrise_zclassic_rooftop";
+
+	mapsdata["pdw"] = spawnStruct();
+	mapsdata["pdw"].mapname = "PDW";
+	mapsdata["pdw"].mapid = "exec zm_4v4_grief_rooftop_pdw.cfg map zm_highrise";
+	mapsdata["pdw"].image = "loadscreen_zm_highrise_zclassic_rooftop";
+
+	mapsdata["nuked"] = spawnStruct();
+	mapsdata["nuked"].mapname = "Nuketown";
+	mapsdata["nuked"].mapid = "exec zm_4v4_grief_nuked.cfg map zm_nuked";
+	mapsdata["nuked"].image = "loadscreen_zm_nuked_zstandard_nuked";
+
+	return mapsdata;
+}
+
+_intermission()
+{
+	level.zombie_vars["zombie_intermission_time"] = 5;
+	level.intermission = 1;
+	level notify("intermission");
+
+	for (i = 0; i < level.players.size; i++)
+	{
+		level.players[i] thread player_intermission();
+		level.players[i] hide();
+		level.players[i] setclientuivisibilityflag("hud_visible", 0);
+
+		level.players[i] setclientthirdperson(0);
+		level.players[i] resetfov();
+		level.players[i].health = 100;
+		level.players[i] stopsounds();
+		level.players[i] stopsounds();
+	}
+
+	mv_Begin(); // Wait until mapvote is done
+
+	for (i = 0; i < level.players.size; i++)
+	{
+		level.players[i] notify("_zombie_game_over");
+		level.players[i].sessionstate = "intermission";
+	}
+
+	players = get_players();
+	i = 0;
+	while (i < players.size)
+	{
+		setclientsysstate("levelNotify", "zi", players[i]);
+		// players[ i ] setclientthirdperson( 0 );
+		// players[ i ] resetfov();
+		// players[ i ].health = 100;
+		// players[ i ] thread [[ level.custom_intermission ]]();
+		// players[ i ] stopsounds();
+		i++;
+	}
+	wait 0.25;
+	players = get_players();
+	i = 0;
+	while (i < players.size)
+	{
+		setclientsysstate("lsm", "0", players[i]);
+		i++;
+	}
+	level thread maps\mp\zombies\_zm::zombie_game_over_death();
 }
 
 player_intermission()
@@ -165,56 +282,6 @@ player_intermission()
 	}
 }
 
-_intermission()
-{
-
-	level.intermission = 1;
-	level notify("intermission");
-
-	for (i = 0; i < level.players.size; i++)
-	{
-		level.players[i] thread player_intermission();
-		level.players[i] hide();
-		level.players[i] setclientuivisibilityflag("hud_visible", 0);
-
-		level.players[i] setclientthirdperson(0);
-		level.players[i] resetfov();
-		level.players[i].health = 100;
-		level.players[i] stopsounds();
-		level.players[i] stopsounds();
-	}
-
-	mv_Begin(); // Wait until mapvote is done
-
-	for (i = 0; i < level.players.size; i++)
-	{
-		level.players[i] notify("_zombie_game_over");
-		level.players[i].sessionstate = "intermission";
-	}
-
-	players = get_players();
-	i = 0;
-	while (i < players.size)
-	{
-		setclientsysstate("levelNotify", "zi", players[i]);
-		// players[ i ] setclientthirdperson( 0 );
-		// players[ i ] resetfov();
-		// players[ i ].health = 100;
-		// players[ i ] thread [[ level.custom_intermission ]]();
-		// players[ i ] stopsounds();
-		i++;
-	}
-	wait 0.25;
-	players = get_players();
-	i = 0;
-	while (i < players.size)
-	{
-		setclientsysstate("lsm", "0", players[i]);
-		i++;
-	}
-	level thread maps\mp\zombies\_zm::zombie_game_over_death();
-}
-
 OnPlayerConnected()
 {
 	level endon("end_game");
@@ -230,7 +297,6 @@ _sui()
 }
 mv_BeginWrapper()
 {
-
 	level thread mv_Begin();
 }
 FixBlur() // Reset blur effect to 0
@@ -239,7 +305,6 @@ FixBlur() // Reset blur effect to 0
 	self waittill("spawned_player");
 	self setblur(0, 0);
 }
-
 
 mv_Begin()
 {
@@ -563,7 +628,6 @@ mv_ServerUI()
 	mapUIIMG1 affectElement("y", 1.2, 89);
 	mapUIIMG2 affectElement("y", 1.2, 89);
 	mapUIIMG3 affectElement("y", 1.2, 89);
-
 	mapUIBTXT1 affectElement("y", 1.2, 176);
 	mapUIBTXT2 affectElement("y", 1.2, 176);
 	mapUIBTXT3 affectElement("y", 1.2, 176);
@@ -634,6 +698,7 @@ mv_ServerUI()
 	arrow_right destroyElem();
 	arrow_left destroyElem();*/
 }
+
 SetDvarIfNotInizialized(dvar, value)
 {
 	if (!IsInizialized(dvar))
@@ -642,87 +707,6 @@ SetDvarIfNotInizialized(dvar, value)
 IsInizialized(dvar)
 {
 	return getDvar(dvar) != "";
-}
-getMapsData(mapsIDs)
-{
-	mapsdata = [];
-
-	foreach (id in mapsIDs)
-	{
-		mapsdata[id] = spawnStruct();
-	}
-
-	mapsdata["depot"] = spawnStruct();
-	mapsdata["depot"].mapname = "Depot";
-	mapsdata["depot"].mapid = "exec zm_4v4_grief_transit.cfg map zm_transit";
-	mapsdata["depot"].image = "loadscreen_zm_transit_zgrief_transit";
-
-	mapsdata["farm"] = spawnStruct();
-	mapsdata["farm"].mapname = "Farm";
-	mapsdata["farm"].mapid = "exec zm_4v4_grief_farm.cfg map zm_transit";
-	mapsdata["farm"].image = "loadscreen_zm_transit_zgrief_farm";
-
-	mapsdata["town"] = spawnStruct();
-	mapsdata["town"].mapname = "Town";
-	mapsdata["town"].mapid = "exec zm_4v4_grief_town.cfg map zm_transit";
-	mapsdata["town"].image = "loadscreen_zm_transit_zgrief_town";
-
-	mapsdata["diner"] = spawnStruct();
-	mapsdata["diner"].mapname = "Diner";
-	mapsdata["diner"].mapid = "exec zm_4v4_grief_diner.cfg map zm_transit";
-	mapsdata["diner"].image = "loadscreen_zm_transit_dr_zcleansed_diner";
-
-	mapsdata["tunnel"] = spawnStruct();
-	mapsdata["tunnel"].mapname = "Tunnel";
-	mapsdata["tunnel"].mapid = "exec zm_4v4_grief_tunnel.cfg map zm_transit";
-	mapsdata["tunnel"].image = "loadscreen_zm_transit_zstandard_transit";
-
-	mapsdata["power"] = spawnStruct();
-	mapsdata["power"].mapname = "Power";
-	mapsdata["power"].mapid = "exec zm_4v4_grief_power.cfg map zm_transit";
-	mapsdata["power"].image = "loadscreen_zm_transit_zstandard_transit";
-
-	mapsdata["cellblock"] = spawnStruct();
-	mapsdata["cellblock"].mapname = "Cellblock";
-	mapsdata["cellblock"].mapid = "exec zm_4v4_grief_cellblock.cfg map zm_prison";
-	mapsdata["cellblock"].image = "loadscreen_zm_prison_zgrief_cellblock";
-
-	mapsdata["docks"] = spawnStruct();
-	mapsdata["docks"].mapname = "Docks";
-	mapsdata["docks"].mapid = "exec zm_4v4_grief_docks.cfg map zm_prison";
-	mapsdata["docks"].image = "loadscreen_zm_prison_zgrief_cellblock";
-
-	mapsdata["buried"] = spawnStruct();
-	mapsdata["buried"].mapname = "Buried";
-	mapsdata["buried"].mapid = "exec zm_4v4_grief_street.cfg map zm_buried";
-	mapsdata["buried"].image = "loadscreen_zm_buried_zgrief_street";
-
-	mapsdata["crazyplace"] = spawnStruct();
-	mapsdata["crazyplace"].mapname = "Crazyplace";
-	mapsdata["crazyplace"].mapid = "exec zm_4v4_grief_crazyplace.cfg map zm_tomb";
-	mapsdata["crazyplace"].image = "loadscreen_zm_tomb_zclassic_tomb";
-
-	mapsdata["spawn"] = spawnStruct();
-	mapsdata["spawn"].mapname = "Spawn";
-	mapsdata["spawn"].mapid = "exec zm_4v4_grief_trenches.cfg map zm_tomb";
-	mapsdata["spawn"].image = "loadscreen_zm_tomb_zclassic_tomb";
-
-	mapsdata["dragon"] = spawnStruct();
-	mapsdata["dragon"].mapname = "Dragon";
-	mapsdata["dragon"].mapid = "exec zm_4v4_grief_rooftop_blue.cfg map zm_highrise";
-	mapsdata["dragon"].image = "loadscreen_zm_highrise_zclassic_rooftop";
-
-	mapsdata["pdw"] = spawnStruct();
-	mapsdata["pdw"].mapname = "PDW";
-	mapsdata["pdw"].mapid = "exec zm_4v4_grief_rooftop_pdw.cfg map zm_highrise";
-	mapsdata["pdw"].image = "loadscreen_zm_highrise_zclassic_rooftop";
-
-	mapsdata["nuked"] = spawnStruct();
-	mapsdata["nuked"].mapname = "Nuketown";
-	mapsdata["nuked"].mapid = "exec zm_4v4_grief_nuked.cfg map zm_nuked";
-	mapsdata["nuked"].image = "loadscreen_zm_nuked_zstandard_nuked";
-
-	return mapsdata;
 }
 isValidColor(value)
 {
