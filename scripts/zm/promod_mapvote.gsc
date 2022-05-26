@@ -142,7 +142,6 @@ getMapsData(mapsIDs)
 
 _intermission()
 {
-	level.zombie_vars["zombie_intermission_time"] = 5;
 	level.intermission = 1;
 	level notify("intermission");
 
@@ -392,9 +391,13 @@ mv_PlayerUI()
 	boxes[1] = self createRectangle("CENTER", "CENTER", 0, -50, 205, 131, bg_color, "menu_zm_popup", 2, 0);
 	boxes[2] = self createRectangle("CENTER", "CENTER", 220, -50, 205, 131, bg_color, "menu_zm_popup", 2, 0);
 
-	boxes[0] affectElement("y", 1.2, -50);
-	boxes[1] affectElement("y", 1.2, -50);
-	boxes[2] affectElement("y", 1.2, -50);
+	boxes[0] affectElement("alpha", 0.5, 1);
+	boxes[1] affectElement("alpha", 0.5, 1);
+	boxes[2] affectElement("alpha", 0.5, 1);
+
+	// boxes[0] affectElement("y", 1.2, -50);
+	// boxes[1] affectElement("y", 1.2, -50);
+	// boxes[2] affectElement("y", 1.2, -50);
 
 	self thread mv_PlayerFixAngle();
 	self thread destroyBoxes(boxes);
@@ -409,9 +412,7 @@ mv_PlayerUI()
 
 	self.statusicon = "compassping_enemy"; // Red dot
 	level waittill("mv_start_vote");
-	boxes[0] affectElement("alpha", 0.2, 1);
-	boxes[1] affectElement("alpha", 0.2, 1);
-	boxes[2] affectElement("alpha", 0.2, 1);
+
 	index = 0;
 	isVoting = 1;
 	while (level.__mapvote["time"] > 0 && isVoting)
@@ -489,25 +490,28 @@ mv_VoteManager()
 	votes = [];
 	votes[0] = spawnStruct();
 	votes[0].votes = level createServerFontString("objective", 1.6);
-	votes[0].votes setPoint("LEFT", "CENTER", -165 + 15, -325);
+	votes[0].votes setPoint("LEFT", "CENTER", -165 + 15, -14);
 	votes[0].votes.label = &"^" + getDvarInt("mv_votecolor");
 	votes[0].votes.sort = 4;
+	votes[0].votes.alpha = 0;
 	votes[0].value = 0;
 	votes[0].map = level.__mapvote["map1"];
 
 	votes[1] = spawnStruct();
 	votes[1].votes = level createServerFontString("objective", 1.6);
-	votes[1].votes setPoint("CENTER", "CENTER", 55 + 15, -325);
+	votes[1].votes setPoint("CENTER", "CENTER", 55 + 15, -14);
 	votes[1].votes.label = &"^" + getDvarInt("mv_votecolor");
 	votes[1].votes.sort = 4;
+	votes[1].votes.alpha = 0;
 	votes[1].value = 0;
 	votes[1].map = level.__mapvote["map2"];
 
 	votes[2] = spawnStruct();
 	votes[2].votes = level createServerFontString("objective", 1.6);
-	votes[2].votes setPoint("RIGHT", "CENTER", 165 + 55 + 55 + 15, -325);
+	votes[2].votes setPoint("RIGHT", "CENTER", 165 + 55 + 55 + 15, -14);
 	votes[2].votes.label = &"^" + getDvarInt("mv_votecolor");
 	votes[2].votes.sort = 4;
+	votes[2].votes.alpha = 0;
 	votes[2].value = 0;
 	votes[2].map = level.__mapvote["map3"];
 
@@ -515,9 +519,12 @@ mv_VoteManager()
 	votes[1].votes setValue(0);
 	votes[2].votes setValue(0);
 
-	votes[0].votes affectElement("y", 1.2, -14);
-	votes[1].votes affectElement("y", 1.2, -14);
-	votes[2].votes affectElement("y", 1.2, -14);
+	// votes[0].votes affectElement("alpha", 0.5, 1);
+	// votes[1].votes affectElement("alpha", 0.5, 1);
+	// votes[2].votes affectElement("alpha", 0.5, 1);
+	// votes[0].votes affectElement("y", 1.2, -14);
+	// votes[1].votes affectElement("y", 1.2, -14);
+	// votes[2].votes affectElement("y", 1.2, -14);
 
 	votes[0].hideWhenInMenu = 1;
 	votes[1].hideWhenInMenu = 1;
@@ -565,8 +572,6 @@ mv_VoteManager()
 	// votes[0].votes destroyElem();
 	// votes[1].votes destroyElem();
 	// votes[2].votes destroyElem();
-
-	wait 5;
 }
 
 mv_GetMostVotedMap(votes)
@@ -607,31 +612,41 @@ mv_ServerUI()
 
 	mv_votecolor = getDvar("mv_votecolor");
 
-	mapUI1 = level createString("^7" + level.__mapvote["map1"].mapname, "objective", 1.5, "CENTER", "CENTER", -220, -325, (1, 1, 1), 1, (0, 0, 0), 0.5, 5, 1);
-	mapUI2 = level createString("^7" + level.__mapvote["map2"].mapname, "objective", 1.5, "CENTER", "CENTER", 0, -325, (1, 1, 1), 1, (0, 0, 0), 0.5, 5, 1);
-	mapUI3 = level createString("^7" + level.__mapvote["map3"].mapname, "objective", 1.5, "CENTER", "CENTER", 220, -325, (1, 1, 1), 1, (0, 0, 0), 0.5, 5, 1);
+	mapUI1 = level createString("^7" + level.__mapvote["map1"].mapname, "objective", 1.5, "CENTER", "CENTER", -220, -14, (1, 1, 1), 0, (0, 0, 0), 0.5, 5, 1);
+	mapUI2 = level createString("^7" + level.__mapvote["map2"].mapname, "objective", 1.5, "CENTER", "CENTER", 0, -14, (1, 1, 1), 0, (0, 0, 0), 0.5, 5, 1);
+	mapUI3 = level createString("^7" + level.__mapvote["map3"].mapname, "objective", 1.5, "CENTER", "CENTER", 220, -14, (1, 1, 1), 0, (0, 0, 0), 0.5, 5, 1);
 
-	mapUIIMG1 = level drawshader(level.__mapvote["map1"].image, -220, -310, 200, 117, (1, 1, 1), 1, 1, "LEFT", "CENTER", 1);
-	mapUIIMG1 fadeovertime(0.5);
-	mapUIIMG2 = level drawshader(level.__mapvote["map2"].image, 0, -310, 200, 117, (1, 1, 1), 1, 1, "CENTER", "CENTER", 1);
-	mapUIIMG2 fadeovertime(0.5);
-	mapUIIMG3 = level drawshader(level.__mapvote["map3"].image, 220, -310, 200, 117, (1, 1, 1), 1, 1, "RIGHT", "CENTER", 1);
-	mapUIIMG3 fadeovertime(0.5);
+	mapUIIMG1 = level drawshader(level.__mapvote["map1"].image, -220, 89, 200, 117, (1, 1, 1), 0, 1, "LEFT", "CENTER", 1);
+	// mapUIIMG1 fadeovertime(0.5);
+	mapUIIMG2 = level drawshader(level.__mapvote["map2"].image, 0, 89, 200, 117, (1, 1, 1), 0, 1, "CENTER", "CENTER", 1);
+	// mapUIIMG2 fadeovertime(0.5);
+	mapUIIMG3 = level drawshader(level.__mapvote["map3"].image, 220, 89, 200, 117, (1, 1, 1), 0, 1, "RIGHT", "CENTER", 1);
+	// mapUIIMG3 fadeovertime(0.5);
 
-	mapUIBTXT1 = level drawshader("black", -220, -325, 194, 30, (1, 1, 1), 0.7, 2, "LEFT", "CENTER", 1);
-	mapUIBTXT2 = level drawshader("black", 0, -325, 194, 30, (1, 1, 1), 0.7, 2, "CENTER", "CENTER", 1);
-	mapUIBTXT3 = level drawshader("black", 220, -325, 194, 30, (1, 1, 1), 0.7, 2, "RIGHT", "CENTER", 1);
+	mapUIBTXT1 = level drawshader("black", -220, 176, 194, 30, (1, 1, 1), 0, 2, "LEFT", "CENTER", 1);
+	mapUIBTXT2 = level drawshader("black", 0, 176, 194, 30, (1, 1, 1), 0, 2, "CENTER", "CENTER", 1);
+	mapUIBTXT3 = level drawshader("black", 220, 176, 194, 30, (1, 1, 1), 0, 2, "RIGHT", "CENTER", 1);
 
-	mapUI1 affectElement("y", 1.2, -14);
-	mapUI2 affectElement("y", 1.2, -14);
-	mapUI3 affectElement("y", 1.2, -14);
-	mapUIIMG1 affectElement("y", 1.2, 89);
-	mapUIIMG2 affectElement("y", 1.2, 89);
-	mapUIIMG3 affectElement("y", 1.2, 89);
-	mapUIBTXT1 affectElement("y", 1.2, 176);
-	mapUIBTXT2 affectElement("y", 1.2, 176);
-	mapUIBTXT3 affectElement("y", 1.2, 176);
-	
+	// mapUI1 affectElement("y", 1.2, -14);
+	// mapUI2 affectElement("y", 1.2, -14);
+	// mapUI3 affectElement("y", 1.2, -14);
+	// mapUIIMG1 affectElement("y", 1.2, 89);
+	// mapUIIMG2 affectElement("y", 1.2, 89);
+	// mapUIIMG3 affectElement("y", 1.2, 89);
+	// mapUIBTXT1 affectElement("y", 1.2, 176);
+	// mapUIBTXT2 affectElement("y", 1.2, 176);
+	// mapUIBTXT3 affectElement("y", 1.2, 176);
+
+	mapUI1 affectElement("alpha", 0.5, 1);
+	mapUI2 affectElement("alpha", 0.5, 1);
+	mapUI3 affectElement("alpha", 0.5, 1);
+	mapUIIMG1 affectElement("alpha", 0.4, 1);
+	mapUIIMG2 affectElement("alpha", 0.4, 1);
+	mapUIIMG3 affectElement("alpha", 0.4, 1);
+	mapUIBTXT1 affectElement("alpha", 0.4, 0.7);
+	mapUIBTXT2 affectElement("alpha", 0.4, 0.7);
+	mapUIBTXT3 affectElement("alpha", 0.4, 0.7);
+
 	buttons affectElement("alpha", 1.5, 0.8);
 
 	mv_arrowcolor = GetColor(getDvar("mv_arrowcolor"));
@@ -642,12 +657,13 @@ mv_ServerUI()
 	wait 1;
 	level notify("mv_start_vote");
 
+
 	mv_sentence = getDvar("mv_sentence");
 	mv_socialname = getDvar("mv_socialname");
 	mv_sociallink = getDvar("mv_sociallink");
 	credits = level createServerFontString("objective", 1.2);
 	credits setPoint("BOTTOM_LEFT", "BOTTOM_LEFT");
-	credits setText(mv_sentence + "\nDeveloped by ^5JezuzLizard^7, ^55and5^7, ^5DoktorSAS ^7\n" + mv_socialname + "^7: " + mv_sociallink);
+	credits setText(mv_sentence + "\nDeveloped by ^5JezuzLizard^7, ^55and5^7 and ^5DoktorSAS ^7\n" + mv_socialname + "^7: " + mv_sociallink);
 
 	timer = level createServerFontString("objective", 2);
 	timer setPoint("CENTER", "BOTTOM", "CENTER", "CENTER");
@@ -656,13 +672,13 @@ mv_ServerUI()
 	level notify("mv_destroy_hud");
 	// logPrint("mapvote//mv_ServerUI " + getTime()/1000 + "\n");
 
-	mapUIIMG1 affectElement("alpha", 0.4, 0);
-	mapUIIMG2 affectElement("alpha", 0.4, 0);
-	mapUIIMG3 affectElement("alpha", 0.4, 0);
-
 	mapUI1 affectElement("alpha", 0.5, 0);
 	mapUI2 affectElement("alpha", 0.5, 0);
 	mapUI3 affectElement("alpha", 0.5, 0);
+
+	mapUIIMG1 affectElement("alpha", 0.4, 0);
+	mapUIIMG2 affectElement("alpha", 0.4, 0);
+	mapUIIMG3 affectElement("alpha", 0.4, 0);
 
 	mapUIBTXT1 affectElement("alpha", 0.4, 0);
 	mapUIBTXT2 affectElement("alpha", 0.4, 0);
