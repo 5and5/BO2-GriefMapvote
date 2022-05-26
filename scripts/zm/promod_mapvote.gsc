@@ -5,7 +5,6 @@
 main()
 {
 	replaceFunc(maps\mp\zombies\_zm::intermission, ::_intermission);
-	// replaceFunc(maps\mp\zombies\_zm::end_game, ::end_game_override);
 }
 
 init()
@@ -31,7 +30,7 @@ mv_Config()
 	SetDvarIfNotInizialized("mv_endscreen_time", 6);
 	SetDvarIfNotInizialized("mv_time", 20);
 	level.__mapvote["time"] = getDvarInt("mv_time");
-	SetDvarIfNotInizialized("mv_maps", "depot farm town diner tunnel power cellblock docks buried pdw dragon crazyplace trenches nuked");
+	SetDvarIfNotInizialized("mv_maps", "depot farm town diner tunnel power cellblock docks buried pdw dragon crazyplace trenches nuked ");
 
 	// PreCache maps images
 	mapsIDs = [];
@@ -61,11 +60,6 @@ mv_Config()
 getMapsData(mapsIDs)
 {
 	mapsdata = [];
-
-	foreach (id in mapsIDs)
-	{
-		mapsdata[id] = spawnStruct();
-	}
 
 	mapsdata["depot"] = spawnStruct();
 	mapsdata["depot"].mapname = "Depot";
@@ -658,7 +652,6 @@ mv_ServerUI()
 	wait 1;
 	level notify("mv_start_vote");
 
-
 	mv_sentence = getDvar("mv_sentence");
 	mv_socialname = getDvar("mv_socialname");
 	mv_sociallink = getDvar("mv_sociallink");
@@ -729,24 +722,6 @@ isValidColor(value)
 {
 	return value == "0" || value == "1" || value == "2" || value == "3" || value == "4" || value == "5" || value == "6" || value == "7";
 }
-// CMD not working on zombies
-addCmd(cmd, function)
-{
-	self notifyOnPlayerCommand(cmd + "_cmd", cmd);
-	self thread cmdManager(cmd + "_cmd", function);
-}
-cmdManager(cmd, function)
-{
-	self endon("disconnect");
-	self endon("round_ended");
-	level endon("game_ended");
-	level endon("round_end_finished");
-	for (;;)
-	{
-		self waittill(cmd);
-		self [[function]] ();
-	}
-}
 GetColor(color)
 {
 	switch (tolower(color))
@@ -797,7 +772,6 @@ GetColor(color)
 		break;
 	}
 }
-// Drawing
 // Drawing
 CreateString(input, font, fontScale, align, relative, x, y, color, alpha, glowColor, glowAlpha, sort, isLevel, isValue)
 {
@@ -919,5 +893,3 @@ affectElement(type, time, value)
 	if (type == "color")
 		self.color = value;
 }
-// Just for testing
-empty() {}
