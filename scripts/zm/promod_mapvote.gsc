@@ -46,15 +46,14 @@ mv_Config()
 
 	// Setting default values if needed
 	SetDvarIfNotInizialized("mv_sentence", "Thanks for Playing!");
-	SetDvarIfNotInizialized("mv_socials", 1);
 	SetDvarIfNotInizialized("mv_socialname", "Discord");
 	SetDvarIfNotInizialized("mv_sociallink", "Discord.gg/^3CODRGrief^7");
 	SetDvarIfNotInizialized("mv_votecolor", "5");		
 	SetDvarIfNotInizialized("mv_arrowcolor", "white");
-	SetDvarIfNotInizialized("mv_blur", "3");
 	SetDvarIfNotInizialized("mv_scrollcolor", "cyan");
-	SetDvarIfNotInizialized("mv_selectcolor", "lightgreen");
+	SetDvarIfNotInizialized("mv_selectcolor", "purple");
 	SetDvarIfNotInizialized("mv_backgroundcolor", "grey");
+	SetDvarIfNotInizialized("mv_blur", "3");
 	SetDvarIfNotInizialized("mv_gametype", "");
 	setDvarIfNotInizialized("mv_excludedmaps", "");
 }
